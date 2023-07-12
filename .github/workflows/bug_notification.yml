@@ -1,0 +1,57 @@
+name: Bug Notification
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  bug_notification:
+    permissions: write-all
+    
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Run Static Analyzer
+        run: |
+          # Add commands to run your static analyzer and generate the bug report
+          # Replace `your_static_analyzer_command` with the actual command
+
+          python3 your_static_analyzer_command.py > bug_report.txt
+
+      - name: Notify about Bugs
+        if: failure()
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const bugReport = fs.readFileSync('bug_report.txt', 'utf8');
+            const issueBody = `The static analyzer has detected the following bugs:\n\n${bugReport}`;
+
+            const lineRegex = /^.*:(\d+):.*/gm;
+            const linesWithErrors = [];
+            let matches;
+
+            while ((matches = lineRegex.exec(bugReport)) !== null) {
+              linesWithErrors.push(matches[1]);
+            }
+
+            linesWithErrors.forEach((lineNumber) => {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: issueBody,
+                position: lineNumber
+              });
+            });
