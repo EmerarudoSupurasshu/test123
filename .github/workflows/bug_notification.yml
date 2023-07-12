@@ -44,7 +44,8 @@ jobs:
               linesWithErrors.push(matches[1]);
             }
 
-            const contextWithErrors = github.context.sha;
+            const contextWithErrors = github.context;
+            console.log(github.context);
 
             linesWithErrors.forEach((lineNumber) => {
               github.issues.createComment({
