@@ -24,7 +24,7 @@ jobs:
           # Add commands to run your static analyzer and generate the bug report
           # Replace `your_static_analyzer_command` with the actual command
 
-          your_static_analyzer_command > bug_report.txt || true
+          python3 your_static_analyzer_command.py > bug_report.txt || true
 
       - name: Notify about Bugs
         if: failure()
