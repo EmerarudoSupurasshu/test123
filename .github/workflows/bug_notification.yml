@@ -6,13 +6,10 @@ on:
       - opened
       - synchronize
 
-permissions:
-  contents: 'read'
-  id-token: 'write'
-  issues: 'write'
-  
 jobs:
   bug_notification:
+    permissions: write-all
+    
     runs-on: ubuntu-latest
 
     steps:
