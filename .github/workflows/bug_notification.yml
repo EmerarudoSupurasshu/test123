@@ -6,6 +6,11 @@ on:
       - opened
       - synchronize
 
+permissions:
+  contents: 'read'
+  id-token: 'write'
+  issues: 'write'
+  
 jobs:
   bug_notification:
     runs-on: ubuntu-latest
